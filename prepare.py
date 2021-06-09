@@ -50,10 +50,10 @@ def extract_label_multi(speed_matrix, seq_len, pred_len, dataset_name):
     Returns: speed_sequences, speed_labels
 
     """
-    if 'PeMS08' not in dataset_name:
+    if 'PEMS08' not in dataset_name:
         dataset_label = 'METR_LA'
     else:
-        dataset_label = 'PeMS08'
+        dataset_label = 'PEMS08'
     if os.path.exists('{}_Dataset/{}_seq_seasonal.npy'.format(dataset_label, dataset_name)):
         print('Find pre-saved seasonal data...')
         speed_sequences = np.load('{}_Dataset/{}_seq_seasonal.npy'.format(dataset_label, dataset_name))

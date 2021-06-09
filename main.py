@@ -1,17 +1,17 @@
 import argparse
 from prepare import *
 from train_dkfn import *
-from train_tdkfn import *
+from train_sdkfn import *
 
 parser = argparse.ArgumentParser(description='traffic prediction')
 
 # data
-parser.add_argument('-dataset', type=str, default='PeMS08', help='choose dataset to run [options: metr_la10, metr_la20,'
-                                                                 'metr_la30, metr_la40, metr_la50, PeMS08_300, PeMS08_1000,'
-                                                                 'PeMS08_3000]')
+parser.add_argument('-dataset', type=str, default='PEMS08', help='choose dataset to run [options: metr_la10, metr_la20,'
+                                                                 'metr_la30, metr_la40, metr_la50, PEMS08_300, PEMS08_1000,'
+                                                                 'PEMS08_3000]')
 
 # model
-parser.add_argument('-model', type=str, default='tdkfn', help='choose model to train and test [options: tdkfn, dkfn]')
+parser.add_argument('-model', type=str, default='sdkfn', help='choose model to train and test [options: sdkfn, dkfn]')
 args = parser.parse_args()
 
 # load data
@@ -35,18 +35,18 @@ elif args.dataset == 'metr_la50':
     print("\nLoading metr_la 50 data...")
     speed_matrix = np.load('./METR_LA_Dataset/speed_matrix_50.npy')
     A = np.load('./METR_LA_Dataset/METR_LA_A.npy')
-elif args.dataset == 'PeMS08_300':
-    print("\nLoading PeMS08_300 data...")
-    speed_matrix = np.load('PeMS08_Dataset/speed_min.npy')
-    A = np.load('PeMS08_Dataset/pems08_adj_mat_clean.npy')
-elif args.dataset == 'PeMS08_1000':
-    print("\nLoading PeMS08 data...")
-    speed_matrix = np.load('PeMS08_Dataset/speed_min_1000.npy')
-    A = np.load('PeMS08_Dataset/pems08_adj_mat_clean.npy')
-elif args.dataset == 'PeMS08_3000':
-    print("\nLoading PeMS08 data...")
-    speed_matrix = np.load('PeMS08_Dataset/speed_min_3000.npy')
-    A = np.load('PeMS08_Dataset/pems08_adj_mat_clean.npy')
+elif args.dataset == 'PEMS08_300':
+    print("\nLoading PEMS08_300 data...")
+    speed_matrix = np.load('PEMS08_Dataset/speed_min_300.npy')
+    A = np.load('PEMS08_Dataset/pems08_adj_mat_clean.npy')
+elif args.dataset == 'PEMS08_1000':
+    print("\nLoading PEMS08 data...")
+    speed_matrix = np.load('PEMS08_Dataset/speed_min_1000.npy')
+    A = np.load('PEMS08_Dataset/pems08_adj_mat_clean.npy')
+elif args.dataset == 'PEMS08_3000':
+    print("\nLoading PEMS08 data...")
+    speed_matrix = np.load('PEMS08_Dataset/speed_min_3000.npy')
+    A = np.load('PEMS08_Dataset/pems08_adj_mat_clean.npy')
 else:
     print("\nDataset not found...")
     exit(0)
@@ -54,15 +54,15 @@ else:
 
 
 # model
-if args.model == 'tdkfn':
+if args.model == 'sdkfn':
     print("\nPreparing data...")
     train_dataloader, valid_dataloader, test_dataloader, max_speed = PrepareDataset_multi(speed_matrix, args.dataset,
                                                                                           BATCH_SIZE=64,
                                                                                           pred_len=1)
-    print("\nTraining tdkfn model...")
-    tdkfn, tdkfn_loss = TrainttDKFN(train_dataloader, valid_dataloader, A, K=3, num_epochs=100)
-    print("\nTesting tdkfn model...")
-    results = TestttDKFN(tdkfn, test_dataloader, max_speed)
+    print("\nTraining sdkfn model...")
+    tdkfn, tdkfn_loss = TrainsDKFN(train_dataloader, valid_dataloader, A, K=3, num_epochs=100)
+    print("\nTesting sdkfn model...")
+    results = TestsDKFN(tdkfn, test_dataloader, max_speed)
 
 elif args.model == 'dkfn':
     print("\nPreparing data...")
